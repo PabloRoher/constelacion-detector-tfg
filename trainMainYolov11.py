@@ -8,7 +8,6 @@ def main():
     modelos = [
         "yolo11n.pt",
         "yolo11m.pt",
-        "yolo11x.pt"
     ]
 
     # CSV donde guardaremos los resultados
