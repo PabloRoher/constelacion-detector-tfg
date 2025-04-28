@@ -1,0 +1,65 @@
+# TFG - Detección de Constelaciones usando YOLOv11, YOLO-NAS y Modelo Propio
+
+Este proyecto tiene como objetivo detectar constelaciones en imágenes del cielo utilizando redes de detección de objetos de última generación basadas en **YOLOv11**, **YOLO-NAS** y un **modelo propio personalizado**.
+
+> Nota: En este repositorio solo se encuentran disponibles los resultados de los primeros entrenamientos de prueba utilizando el modelo YOLOv11n como ejemplo. Los modelos finales completos no se incluyen debido a que exceden las limitaciones de carga de GitHub.
+
+Este proyecto utiliza **tres entornos de trabajo**:
+
+- **YOLOv11 / Ultralytics:** Entorno virtual `venv`
+- **YOLO-NAS / Super-Gradients:** Entorno virtual `venv_nas`
+- **Modelo Propio:**
+
+### Activar el entorno YOLOv11 (`venv`)
+
+cd ruta/del/proyecto
+.\venv\Scripts\activate
+python yolo11/trainMainYolov11.py
+
+### Activar el entorno YOLO-NAS (`venv_nas`)
+
+cd ruta/del/proyecto
+.\venv_nas\Scripts\activate
+python yolo_nas/train_yolo_nas.py
+
+### Entrenar el Modelo Propio (`--`)
+
+## Resultados y Métricas
+
+Después de completar los entrenamientos:
+
+resultados_entrenamiento.csv → Métricas de los modelos.
+
+El archivo contiene 4 campos: mAP50,mAP75,mAP50-95 y Tiempo de Entrenamiento (s)
+
+## Requisitos
+
+Python 3.10+
+
+### Para YOLOv11: Ultralytics
+
+pip install ultralytics
+
+### Para YOLO-NAS: Super-Gradients
+
+pip install super-gradients
+
+### Para el Modelo Propio:
+
+## Referencias
+
+- Este proyecto utiliza el framework [Super-Gradients](https://zenodo.org/records/7789328) para el modelo YOLO-NAS, desarrollado por Shay Aharon y colaboradores.
+  
+- También se hace uso de [Ultralytics YOLO11](https://github.com/ultralytics/ultralytics), desarrollado por Glenn Jocher y Jing Qiu, bajo licencia AGPL-3.0.
+  
+- El dataset base utilizado es el conjunto [Constellation Dataset](https://universe.roboflow.com/ws-qwbuh/constellation-dsphi) disponible en Roboflow Universe, creado por WS (2023).
+
+## Autor
+Pablo Antonio Rodriguez Hernandez
+
+Estudiante de Ingeniería Informática.
+
+Trabajo Fin de Grado - 2025.
+
+
+
