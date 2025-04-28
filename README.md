@@ -2,7 +2,7 @@
 
 Este proyecto tiene como objetivo detectar constelaciones en imágenes del cielo utilizando redes de detección de objetos de última generación basadas en **YOLOv11**, **YOLO-NAS** y un **modelo propio personalizado**.
 
-> Nota: En este repositorio solo se encuentran disponibles los resultados de los primeros entrenamientos de prueba utilizando el modelo YOLOv11n como ejemplo. Los modelos finales completos no se incluyen debido a que exceden las limitaciones de carga de GitHub.
+> Nota: En este repositorio se incluye una carpeta `/runs/detect/` que contiene únicamente resultados de entrenamientos de prueba iniciales, como ejemplos de ejecución (principalmente con el modelo YOLOv11n). Los mejores resultados de cada entrenamiento se encuentran organizados en el archivo llamado `resultados_entrenamiento`.
 
 Este proyecto utiliza **tres entornos de trabajo**:
 
