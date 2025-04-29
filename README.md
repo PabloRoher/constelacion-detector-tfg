@@ -24,14 +24,6 @@ python yolo_nas/train_yolo_nas.py
 
 ### Entrenar el Modelo Propio (`--`)
 
-## Resultados y Métricas
-
-Después de completar los entrenamientos:
-
-resultados_entrenamiento.csv → Métricas de los modelos.
-
-El archivo contiene 4 campos: mAP50,mAP75,mAP50-95 y Tiempo de Entrenamiento (s)
-
 ## Requisitos
 
 Python 3.10+
@@ -42,9 +34,26 @@ pip install ultralytics
 
 ### Para YOLO-NAS: Super-Gradients
 
-pip install super-gradients
+pip install super-gradients==3.3.0
+
+> Nota: Algunas dependencias como onnx y pycocotools requieren que Visual C++ Build Tools esté instalado en el sistema. Se recomienda no utilizar versiones de Python superiores a 3.10, ya que podrían producirse errores de compatibilidad.
+
+Alternativa:
+
+pip install -r requirementsYOLO_NAS.txt
+
+> Nota: El archivo requirementsYOLO_NAS.txt se incluye en este repositorio y permite instalar todas las dependencias necesarias de una sola vez.
 
 ### Para el Modelo Propio:
+
+
+## Resultados y Métricas
+
+Después de completar los entrenamientos:
+
+resultados_entrenamiento.csv → Métricas de los modelos.
+
+El archivo contiene 4 campos: mAP50,mAP75,mAP50-95 y Tiempo de Entrenamiento (s)
 
 ## Referencias
 
