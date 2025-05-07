@@ -34,9 +34,9 @@ pip install ultralytics
 
 ### Para YOLO-NAS: Super-Gradients
 
-pip install super-gradients==3.3.0
+pip install super-gradients==3.7.1
 
-> Nota: Algunas dependencias como onnx y pycocotools requieren que Visual C++ Build Tools esté instalado en el sistema. Se recomienda no utilizar versiones de Python superiores a 3.10, ya que podrían producirse errores de compatibilidad.
+> Nota: Algunas dependencias como onnx y pycocotools pueden requerir que Visual C++ Build Tools esté instalado en el sistema. Se recomienda no utilizar versiones de Python superiores a 3.10, ya que podrían producirse errores de compatibilidad.
 
 Alternativa:
 

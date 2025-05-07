@@ -4,6 +4,7 @@ venv_nas/
 
 # Ignorar resultados de entrenamiento
 runs/
+checkpoints/
 
 # Ignorar archivos de pesos grandes
 *.pt

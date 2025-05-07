@@ -1,4 +1,4 @@
-super-gradients==3.3.0
+super-gradients==3.7.1
 torch==2.7.0
 torchvision==0.22.0
 matplotlib>=3.10.1
