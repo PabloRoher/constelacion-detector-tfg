@@ -17,3 +17,9 @@ checkpoints/
 
 # Ignorar archivos de logs y auxiliares
 *.log
+
+EvaluarYOLONAS.py
+EvaluarYOLONAS_FINAL.py
+Prueba.py
+
+yolo_nas_s_coco.pth
