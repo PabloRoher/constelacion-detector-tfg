@@ -1,25 +1,35 @@
 # Ignorar entornos virtuales
 venv/
-venv_nas/
+env/
+*/venv/
+*/env/
+venv_*/
+env_*/
 
 # Ignorar resultados de entrenamiento
 runs/
 checkpoints/
+*/runs/
+*/checkpoints/
 
 # Ignorar archivos de pesos grandes
 *.pt
 *.onnx
 *.openvino
+*.pth
 
 # Ignorar carpetas de configuración de editores
 .idea/
 .vscode/
+*.iml
 
 # Ignorar archivos de logs y auxiliares
 *.log
 
+# Archivos específicos de pruebas
 EvaluarYOLONAS.py
 EvaluarYOLONAS_FINAL.py
 Prueba.py
 
-yolo_nas_s_coco.pth
+# Ignora el repositorio oficial clonado
+efficientdet/automl/
