@@ -8,7 +8,7 @@ Este proyecto utiliza **tres entornos de trabajo**:
 
 - **YOLOv11 / Ultralytics:** Entorno virtual `venv`
 - **YOLO-NAS / Super-Gradients:** Entorno virtual `venv_nas`
-- **Modelo Propio:**
+- **EfficientDet (TensorFlow):** Entorno virtual `venv_efficientDet`
 
 ### Activar el entorno YOLOv11 (`venv`)
 
@@ -22,7 +22,13 @@ cd ruta/del/proyecto
 .\venv_nas\Scripts\activate
 python yolo_nas/train_yolo_nas.py
 
-### Entrenar el Modelo Propio (`--`)
+### Activar el entorno YOLO-NAS (`venv_efficientDet`)
+
+cd ruta/del/proyecto
+.\venv_efficientDet\Scripts\activate
+python efficientdet\train_main_efficientDet.py
+
+> Nota: El script train_main_efficientDet.py es una adaptación personalizada del script oficial de Google Research. Incluye los parámetros y rutas adaptados al dataset de constelaciones utilizado en este TFG.
 
 ## Requisitos
 
@@ -44,7 +50,8 @@ pip install -r requirementsYOLO_NAS.txt
 
 > Nota: El archivo requirementsYOLO_NAS.txt se incluye en este repositorio y permite instalar todas las dependencias necesarias de una sola vez.
 
-### Para el Modelo Propio:
+### Para Efficient_Det:
+
 
 
 ## Resultados y Métricas
@@ -59,7 +66,9 @@ El archivo contiene 4 campos: mAP50,mAP75,mAP50-95 y Tiempo de Entrenamiento (s)
 
 - Este proyecto utiliza el framework [Super-Gradients](https://zenodo.org/records/7789328) para el modelo YOLO-NAS, desarrollado por Shay Aharon y colaboradores.
   
-- También se hace uso de [Ultralytics YOLO11](https://github.com/ultralytics/ultralytics), desarrollado por Glenn Jocher y Jing Qiu, bajo licencia AGPL-3.0.
+- Para YOLOV11 se hace uso de [Ultralytics YOLO11](https://github.com/ultralytics/ultralytics), desarrollado por Glenn Jocher y Jing Qiu, bajo licencia AGPL-3.0.
+
+- Para EfficientDet se utiliza la implementación oficial de Google Research / AutoML bajo licencia Apache 2.0.
   
 - El dataset base utilizado es el conjunto [Constellation Dataset](https://universe.roboflow.com/ws-qwbuh/constellation-dsphi) disponible en Roboflow Universe, creado por WS (2023).
 
