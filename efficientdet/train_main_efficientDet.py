@@ -72,11 +72,11 @@ flags.DEFINE_string('mode', 'train_and_eval', 'Mode: train, eval o train_and_eva
 
 def main(_):
     # rutas y parámetros
-    TRAIN_RECORD = r"C:\Users\pablo\Desktop\TFG\Datasets\Constellation.v1i.coco\tfrecords\train-*-of-*.tfrecord"
-    VAL_RECORD   = r"C:\Users\pablo\Desktop\TFG\Datasets\Constellation.v1i.coco\tfrecords\valid-*-of-*.tfrecord"
-    TEST_RECORD  = r"C:\Users\pablo\Desktop\TFG\Datasets\Constellation.v1i.coco\tfrecords\test-*-of-*.tfrecord"
-    MODEL_DIR    = r"C:\Users\pablo\Desktop\TFG\Codigo\TFG1\efficientdet\automl\efficientdet\model_dir"
-    CSV_PATH     = r"C:\Users\pablo\Desktop\TFG\Codigo\TFG1\resultados_entrenamiento.csv"
+    TRAIN_RECORD = "/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/tfrecords/train-*-of-*.tfrecord"
+    VAL_RECORD   = "/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/tfrecords/valid-*-of-*.tfrecord"
+    TEST_RECORD  = "/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/tfrecords/test-*-of-*.tfrecord"
+    MODEL_DIR    = "/mnt/c/Users/pablo/Desktop/TFG/Codigo/TFG1/efficientdet/automl/efficientdet/model_dir"
+    CSV_PATH     = "/mnt/c/Users/pablo/Desktop/TFG/Codigo/TFG1/resultados_entrenamiento.csv"
     MODEL_NAME   = "efficientdet-d0"
     NUM_CLASSES  = 16
     EPOCHS       = 50
@@ -145,7 +145,7 @@ def main(_):
         params['batch_size'] = global_batch_size // n_shards
         params['model_name'] = FLAGS.model_name
         params['num_examples_per_epoch'] = FLAGS.num_examples_per_epoch
-        params['val_json_file'] = r'C:\Users\pablo\Desktop\TFG\Datasets\Constellation.v1i.coco\valid\_annotations.coco.json'
+        params['val_json_file'] = r'/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/valid/_annotations.coco.json'
         return tf.estimator.Estimator(
             model_fn=model_fn_instance, config=run_config, params=params)
 
