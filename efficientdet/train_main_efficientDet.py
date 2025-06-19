@@ -49,34 +49,18 @@ def save_coco_metrics_to_csv(csv_path, model_name, metrics, training_time=0):
         with open(csv_path, 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerow([
-                "Modelo", "mAP@[.5:.95]", "mAP@0.5", "mAP@0.75",
-                "ARmax1", "ARmax10", "ARmax100",
-                "mAP-small", "mAP-medium", "mAP-large",
-                "AR-small", "AR-medium", "AR-large",
-                "Tiempo Entrenamiento (s)"
+                "Modelo", "mAP@[.5:.95]", "mAP@0.5", "mAP@0.75", "Tiempo Entrenamiento (s)"
             ])
 
-    mAP      = metrics.get('AP', 0)
-    mAP50    = metrics.get('AP50', 0)
-    mAP75    = metrics.get('AP75', 0)
-    ARmax1   = metrics.get('ARmax1', 0)
-    ARmax10  = metrics.get('ARmax10', 0)
-    ARmax100 = metrics.get('ARmax100', 0)
-    APs      = metrics.get('APs', 0)
-    APm      = metrics.get('APm', 0)
-    APl      = metrics.get('APl', 0)
-    ARs      = metrics.get('ARs', 0)
-    ARm      = metrics.get('ARm', 0)
-    ARl      = metrics.get('ARl', 0)
+    mAP   = metrics.get('AP', 0)
+    mAP50 = metrics.get('AP50', 0)
+    mAP75 = metrics.get('AP75', 0)
 
     with open(csv_path, 'a', newline='') as f:
         writer = csv.writer(f)
         writer.writerow([
             model_name,
             round(mAP, 6), round(mAP50, 6), round(mAP75, 6),
-            round(ARmax1, 6), round(ARmax10, 6), round(ARmax100, 6),
-            round(APs, 6), round(APm, 6), round(APl, 6),
-            round(ARs, 6), round(ARm, 6), round(ARl, 6),
             round(training_time, 2)
         ])
 
@@ -95,7 +79,7 @@ flags.DEFINE_integer('eval_batch_size', 1, 'Batch size for eval')
 flags.DEFINE_integer('num_examples_per_epoch', 1641, 'Num examples per epoch')
 flags.DEFINE_integer('iterations_per_loop', 1000, '')
 flags.DEFINE_integer('save_checkpoints_steps', 1000, '')
-flags.DEFINE_string('mode', 'train_and_eval', 'Mode: train, eval o train_and_eval')
+flags.DEFINE_string('mode', 'train', 'Mode: train, eval o train_and_eval')
 
 def main(_):
     # rutas y parámetros
@@ -177,35 +161,20 @@ def main(_):
     train_est = get_estimator(FLAGS.train_batch_size)
     eval_est  = get_estimator(FLAGS.eval_batch_size if hasattr(FLAGS, "eval_batch_size") else 1)
 
-    # Entrenamiento y validación por epoch, guarda métricas y tiempos
-    if FLAGS.mode == 'train_and_eval':
-        training_start_time = time.time()
-        for epoch in range(1, EPOCHS+1):
-            print(f"Epoch {epoch}/{EPOCHS}")
-            epoch_start_time = time.time()
-            train_est.train(input_fn=train_input_fn, max_steps=epoch * FLAGS.num_examples_per_epoch // FLAGS.train_batch_size)
-            epoch_training_time = time.time() - epoch_start_time
-            eval_results = eval_est.evaluate(input_fn=eval_input_fn, steps=eval_steps)
-            # Guardar métricas validadas en CSV por epoch
-            save_coco_metrics_to_csv(COCO_CSV_PATH, f"{MODEL_NAME}_valid_epoch{epoch}", eval_results, epoch_training_time)
-
-        # Al final, evalúa en test y guarda métricas + tiempo total
-        total_training_time = time.time() - training_start_time
-        test_results = eval_est.evaluate(input_fn=test_input_fn)
-        save_coco_metrics_to_csv(COCO_CSV_PATH, MODEL_NAME + "_test", test_results, total_training_time)
-        print(f"Tiempo total de entrenamiento: {round(total_training_time,2)} s")
-
-    # Solo entrenamiento completo + valid + test (sin métricas por epoch)
-    elif FLAGS.mode == 'train':
+     # Entrenamiento completo + evaluación final en valid y test
+    if FLAGS.mode == 'train':
         start_time = time.time()
         train_est.train(input_fn=train_input_fn, max_steps=train_steps)
         training_time = time.time() - start_time
+
+        # Evalúa en valid y guarda métricas
         eval_results = eval_est.evaluate(input_fn=eval_input_fn, steps=eval_steps)
         save_coco_metrics_to_csv(COCO_CSV_PATH, MODEL_NAME + "_valid", eval_results, training_time)
+        # Evalúa en test y guarda métricas
         test_results = eval_est.evaluate(input_fn=test_input_fn)
         save_coco_metrics_to_csv(COCO_CSV_PATH, MODEL_NAME + "_test", test_results, training_time)
 
-    # Solo evaluación
+    # Solo evaluación (sin entrenamiento)
     elif FLAGS.mode == 'eval':
         eval_results = eval_est.evaluate(input_fn=eval_input_fn, steps=eval_steps)
         save_coco_metrics_to_csv(COCO_CSV_PATH, MODEL_NAME + "_valid", eval_results)
@@ -214,6 +183,5 @@ def main(_):
 
     else:
         logging.info('Invalid mode: %s', FLAGS.mode)
-
 if __name__ == '__main__':
     app.run(main)
