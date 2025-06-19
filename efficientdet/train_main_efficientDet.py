@@ -1,7 +1,7 @@
 # Basado en main.py del repo oficial EfficientDet (Google Research, Apache 2.0)
 # Cambios:
 #   - Rutas y parámetros adaptados a dataset de constelaciones
-#   - Número de clases fijado a 17
+#   - Número de clases fijado a 16
 #   - Epochs, batch size y modelo predefinidos
 #   - Simplificado para entrenamiento local
 # Copyright 2020 Google Research. All Rights Reserved.
@@ -40,17 +40,44 @@ import utils
 
 FLAGS = flags.FLAGS
 
-def save_metrics_to_csv(csv_path, model_name, metrics, training_time=0):
-    # guarda las métricas principales en el csv
-    mAP     = metrics.get('AP', 0)
-    mAP50   = metrics.get('AP50', 0)
-    mAP75   = metrics.get('AP75', 0)
-    precision = metrics.get('Precision', 0)
-    recall    = metrics.get('Recall', 0)
+# Ruta donde se guardarán las métricas COCO
+COCO_CSV_PATH = "/home/pablo/constelacion-detector-tfg/efficientdet/metrics_coco.csv"
+
+def save_coco_metrics_to_csv(csv_path, model_name, metrics, training_time=0):
+    # Crear CSV si no existe
+    if not os.path.exists(csv_path):
+        with open(csv_path, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                "Modelo", "mAP@[.5:.95]", "mAP@0.5", "mAP@0.75",
+                "ARmax1", "ARmax10", "ARmax100",
+                "mAP-small", "mAP-medium", "mAP-large",
+                "AR-small", "AR-medium", "AR-large",
+                "Tiempo Entrenamiento (s)"
+            ])
+
+    mAP      = metrics.get('AP', 0)
+    mAP50    = metrics.get('AP50', 0)
+    mAP75    = metrics.get('AP75', 0)
+    ARmax1   = metrics.get('ARmax1', 0)
+    ARmax10  = metrics.get('ARmax10', 0)
+    ARmax100 = metrics.get('ARmax100', 0)
+    APs      = metrics.get('APs', 0)
+    APm      = metrics.get('APm', 0)
+    APl      = metrics.get('APl', 0)
+    ARs      = metrics.get('ARs', 0)
+    ARm      = metrics.get('ARm', 0)
+    ARl      = metrics.get('ARl', 0)
+
     with open(csv_path, 'a', newline='') as f:
         writer = csv.writer(f)
         writer.writerow([
-            model_name, precision, recall, mAP50, mAP, round(training_time, 2)
+            model_name,
+            round(mAP, 6), round(mAP50, 6), round(mAP75, 6),
+            round(ARmax1, 6), round(ARmax10, 6), round(ARmax100, 6),
+            round(APs, 6), round(APm, 6), round(APl, 6),
+            round(ARs, 6), round(ARm, 6), round(ARl, 6),
+            round(training_time, 2)
         ])
 
 # Definición de flags necesarios
@@ -75,8 +102,7 @@ def main(_):
     TRAIN_RECORD = "/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/tfrecords/train-*-of-*.tfrecord"
     VAL_RECORD   = "/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/tfrecords/valid-*-of-*.tfrecord"
     TEST_RECORD  = "/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/tfrecords/test-*-of-*.tfrecord"
-    MODEL_DIR    = "/mnt/c/Users/pablo/Desktop/TFG/Codigo/TFG1/efficientdet/automl/efficientdet/model_dir"
-    CSV_PATH     = "/mnt/c/Users/pablo/Desktop/TFG/Codigo/TFG1/resultados_entrenamiento.csv"
+    MODEL_DIR    = "/home/pablo/constelacion-detector-tfg/efficientdet/automl/model_dir"
     MODEL_NAME   = "efficientdet-d0"
     NUM_CLASSES  = 16
     EPOCHS       = 50
@@ -89,7 +115,6 @@ def main(_):
     flags.FLAGS.hparams            = f"num_classes={NUM_CLASSES}"
     flags.FLAGS.num_epochs         = EPOCHS
     flags.FLAGS.train_batch_size   = BATCH_SIZE
-    #flags.FLAGS.strategy         = ""   # Local, sin TPU
 
     config = hparams_config.get_detection_config(FLAGS.model_name)
     config.override(FLAGS.hparams)
@@ -145,42 +170,47 @@ def main(_):
         params['batch_size'] = global_batch_size // n_shards
         params['model_name'] = FLAGS.model_name
         params['num_examples_per_epoch'] = FLAGS.num_examples_per_epoch
-        params['val_json_file'] = r'/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/valid/_annotations.coco.json'
+        params['val_json_file'] = '/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/valid/_annotations.coco.json'
         return tf.estimator.Estimator(
             model_fn=model_fn_instance, config=run_config, params=params)
 
     train_est = get_estimator(FLAGS.train_batch_size)
     eval_est  = get_estimator(FLAGS.eval_batch_size if hasattr(FLAGS, "eval_batch_size") else 1)
 
-    # Entrenamiento
-    if FLAGS.mode == 'train':
+    # Entrenamiento y validación por epoch, guarda métricas y tiempos
+    if FLAGS.mode == 'train_and_eval':
+        training_start_time = time.time()
+        for epoch in range(1, EPOCHS+1):
+            print(f"Epoch {epoch}/{EPOCHS}")
+            epoch_start_time = time.time()
+            train_est.train(input_fn=train_input_fn, max_steps=epoch * FLAGS.num_examples_per_epoch // FLAGS.train_batch_size)
+            epoch_training_time = time.time() - epoch_start_time
+            eval_results = eval_est.evaluate(input_fn=eval_input_fn, steps=eval_steps)
+            # Guardar métricas validadas en CSV por epoch
+            save_coco_metrics_to_csv(COCO_CSV_PATH, f"{MODEL_NAME}_valid_epoch{epoch}", eval_results, epoch_training_time)
+
+        # Al final, evalúa en test y guarda métricas + tiempo total
+        total_training_time = time.time() - training_start_time
+        test_results = eval_est.evaluate(input_fn=test_input_fn)
+        save_coco_metrics_to_csv(COCO_CSV_PATH, MODEL_NAME + "_test", test_results, total_training_time)
+        print(f"Tiempo total de entrenamiento: {round(total_training_time,2)} s")
+
+    # Solo entrenamiento completo + valid + test (sin métricas por epoch)
+    elif FLAGS.mode == 'train':
         start_time = time.time()
         train_est.train(input_fn=train_input_fn, max_steps=train_steps)
         training_time = time.time() - start_time
-        # evalúa en valid y guarda métricas
         eval_results = eval_est.evaluate(input_fn=eval_input_fn, steps=eval_steps)
-        save_metrics_to_csv(CSV_PATH, MODEL_NAME + "_valid", eval_results, training_time)
-        # evalúa en test y guarda métricas
+        save_coco_metrics_to_csv(COCO_CSV_PATH, MODEL_NAME + "_valid", eval_results, training_time)
         test_results = eval_est.evaluate(input_fn=test_input_fn)
-        save_metrics_to_csv(CSV_PATH, MODEL_NAME + "_test", test_results, training_time)
+        save_coco_metrics_to_csv(COCO_CSV_PATH, MODEL_NAME + "_test", test_results, training_time)
 
-    # Evaluación
+    # Solo evaluación
     elif FLAGS.mode == 'eval':
         eval_results = eval_est.evaluate(input_fn=eval_input_fn, steps=eval_steps)
-        save_metrics_to_csv(CSV_PATH, MODEL_NAME + "_valid", eval_results)
+        save_coco_metrics_to_csv(COCO_CSV_PATH, MODEL_NAME + "_valid", eval_results)
         test_results = eval_est.evaluate(input_fn=test_input_fn)
-        save_metrics_to_csv(CSV_PATH, MODEL_NAME + "_test", test_results)
-
-    # Entrenamiento y evaluación
-    elif FLAGS.mode == 'train_and_eval':
-        for epoch in range(1, EPOCHS+1):
-            print(f"Epoch {epoch}/{EPOCHS}")
-            train_est.train(input_fn=train_input_fn, max_steps=epoch * FLAGS.num_examples_per_epoch // FLAGS.train_batch_size)
-            eval_results = eval_est.evaluate(input_fn=eval_input_fn, steps=eval_steps)
-            save_metrics_to_csv(CSV_PATH, f"{MODEL_NAME}_valid_epoch{epoch}", eval_results)
-        # evalúa en test al final de los ciclos
-        test_results = eval_est.evaluate(input_fn=test_input_fn)
-        save_metrics_to_csv(CSV_PATH, MODEL_NAME + "_test", test_results)
+        save_coco_metrics_to_csv(COCO_CSV_PATH, MODEL_NAME + "_test", test_results)
 
     else:
         logging.info('Invalid mode: %s', FLAGS.mode)
