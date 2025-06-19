@@ -1,75 +1,92 @@
+import os
+import glob
 import tensorflow as tf
 
-# Cambia esta ruta al archivo TFRecord que quieras analizar
-tfrecord_path = "C:/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/tfrecords/train-00007-of-00008.tfrecord"
+# Path al directorio donde se encuentran los archivos TFRecord
+TFRECORDS_DIR = r"C:\Users\pablo\Desktop\TFG\Datasets\Constellation.v1i.coco\tfrecords"
 
-# Features esperados
-feature_description = {
-    "image/height": tf.io.FixedLenFeature([], tf.int64),
-    "image/width": tf.io.FixedLenFeature([], tf.int64),
-    "image/filename": tf.io.FixedLenFeature([], tf.string),
-    "image/source_id": tf.io.FixedLenFeature([], tf.string),
-    "image/encoded": tf.io.FixedLenFeature([], tf.string),
-    "image/format": tf.io.FixedLenFeature([], tf.string),
-    "image/object/bbox/xmin": tf.io.VarLenFeature(tf.float32),
-    "image/object/bbox/xmax": tf.io.VarLenFeature(tf.float32),
-    "image/object/bbox/ymin": tf.io.VarLenFeature(tf.float32),
-    "image/object/bbox/ymax": tf.io.VarLenFeature(tf.float32),
-    "image/object/class/text": tf.io.VarLenFeature(tf.string),
-    "image/object/class/label": tf.io.VarLenFeature(tf.int64),
-}
+# Path al archivo donde se guardará el resumen
+RESUMEN_PATH = r"C:\Users\pablo\Desktop\TFG\Codigo\TFG1\efficientdet\Resumen_tfrecord.txt"
 
 def parse_example(example_proto):
-    return tf.io.parse_single_example(example_proto, feature_description)
+    features = {
+        'image/filename': tf.io.FixedLenFeature([], tf.string),
+        'image/object/bbox/xmin': tf.io.VarLenFeature(tf.float32),
+        'image/object/bbox/xmax': tf.io.VarLenFeature(tf.float32),
+        'image/object/bbox/ymin': tf.io.VarLenFeature(tf.float32),
+        'image/object/bbox/ymax': tf.io.VarLenFeature(tf.float32),
+        'image/object/class/label': tf.io.VarLenFeature(tf.int64),
+    }
+    return tf.io.parse_single_example(example_proto, features)
 
-dataset = tf.data.TFRecordDataset([tfrecord_path])
-parsed_dataset = dataset.map(parse_example)
+def resumen_tfrecord(path, num_samples=20):
+    resumen = []
+    resumen.append(f"### Resumen de: {os.path.basename(path)} ###")
+    raw_dataset = tf.data.TFRecordDataset(path)
+    parsed_dataset = raw_dataset.map(parse_example)
+    total_images = 0
+    total_boxes = 0
+    clases = set()
+    imagenes_con_cero_boxes = 0
+    xmin_all, xmax_all, ymin_all, ymax_all = [], [], [], []
+    primer_ejemplo = None
 
-total_images = 0
-total_boxes = 0
-labels_set = set()
-images_with_zero_boxes = 0
-box_stats = []
+    for parsed in parsed_dataset.take(num_samples):
+        total_images += 1
+        labels = tf.sparse.to_dense(parsed['image/object/class/label']).numpy()
+        xmins = tf.sparse.to_dense(parsed['image/object/bbox/xmin']).numpy()
+        xmaxs = tf.sparse.to_dense(parsed['image/object/bbox/xmax']).numpy()
+        ymins = tf.sparse.to_dense(parsed['image/object/bbox/ymin']).numpy()
+        ymaxs = tf.sparse.to_dense(parsed['image/object/bbox/ymax']).numpy()
 
-for example in parsed_dataset.take(20):
-    total_images += 1
-    xmin = tf.sparse.to_dense(example['image/object/bbox/xmin']).numpy()
-    xmax = tf.sparse.to_dense(example['image/object/bbox/xmax']).numpy()
-    ymin = tf.sparse.to_dense(example['image/object/bbox/ymin']).numpy()
-    ymax = tf.sparse.to_dense(example['image/object/bbox/ymax']).numpy()
-    labels = tf.sparse.to_dense(example['image/object/class/label']).numpy()
-    n_boxes = len(xmin)
-    total_boxes += n_boxes
-    if n_boxes == 0:
-        images_with_zero_boxes += 1
-    else:
-        box_stats.append((xmin, xmax, ymin, ymax))
-        labels_set.update(labels.tolist())
-    # Imprime info de la primera imagen
-    if total_images == 1:
-        print("Primer ejemplo:")
-        print("  filename:", example['image/filename'].numpy())
-        print("  labels:", labels)
-        print("  xmin:", xmin)
-        print("  xmax:", xmax)
-        print("  ymin:", ymin)
-        print("  ymax:", ymax)
+        n_boxes = len(labels)
+        total_boxes += n_boxes
+        if n_boxes == 0:
+            imagenes_con_cero_boxes += 1
+        else:
+            clases.update(labels)
+            xmin_all.extend(xmins)
+            xmax_all.extend(xmaxs)
+            ymin_all.extend(ymins)
+            ymax_all.extend(ymaxs)
 
-# Estadísticas
-if box_stats:
-    all_xmin = [x for stats in box_stats for x in stats[0]]
-    all_xmax = [x for stats in box_stats for x in stats[1]]
-    all_ymin = [y for stats in box_stats for y in stats[2]]
-    all_ymax = [y for stats in box_stats for y in stats[3]]
-else:
-    all_xmin = all_xmax = all_ymin = all_ymax = []
+        if primer_ejemplo is None:
+            primer_ejemplo = (
+                f"Primer ejemplo:\n"
+                f"  filename: {parsed['image/filename'].numpy()}\n"
+                f"  labels: {labels}\n"
+                f"  xmin: {xmins}\n"
+                f"  xmax: {xmaxs}\n"
+                f"  ymin: {ymins}\n"
+                f"  ymax: {ymaxs}\n"
+            )
 
-print("\nRESUMEN:")
-print("Total imágenes analizadas:", total_images)
-print("Total bounding boxes:", total_boxes)
-print("Imágenes con cero boxes:", images_with_zero_boxes)
-print("Clases encontradas:", sorted(labels_set))
-print("xmin: min =", min(all_xmin) if all_xmin else None, "max =", max(all_xmin) if all_xmin else None)
-print("xmax: min =", min(all_xmax) if all_xmax else None, "max =", max(all_xmax) if all_xmax else None)
-print("ymin: min =", min(all_ymin) if all_ymin else None, "max =", max(all_ymin) if all_ymin else None)
-print("ymax: min =", min(all_ymax) if all_ymax else None, "max =", max(all_ymax) if all_ymax else None)
+    resumen.append(primer_ejemplo if primer_ejemplo else "No se encontró ningún ejemplo válido.\n")
+    resumen.append(f"RESUMEN:\nTotal imágenes analizadas: {total_images}")
+    resumen.append(f"Total bounding boxes: {total_boxes}")
+    resumen.append(f"Imágenes con cero boxes: {imagenes_con_cero_boxes}")
+    resumen.append(f"Clases encontradas: {sorted(clases) if clases else 'Ninguna'}")
+    resumen.append(f"xmin: min = {min(xmin_all) if xmin_all else 'N/A'} max = {max(xmin_all) if xmin_all else 'N/A'}")
+    resumen.append(f"xmax: min = {min(xmax_all) if xmax_all else 'N/A'} max = {max(xmax_all) if xmax_all else 'N/A'}")
+    resumen.append(f"ymin: min = {min(ymin_all) if ymin_all else 'N/A'} max = {max(ymin_all) if ymin_all else 'N/A'}")
+    resumen.append(f"ymax: min = {min(ymax_all) if ymax_all else 'N/A'} max = {max(ymax_all) if ymax_all else 'N/A'}")
+    resumen.append("-" * 50 + "\n")
+    return "\n".join(resumen)
+
+def main():
+    resumen_total = []
+    tfrecord_files = glob.glob(os.path.join(TFRECORDS_DIR, "*.tfrecord"))
+
+    for tfrec in sorted(tfrecord_files):
+        print(f"Procesando {tfrec} ...")
+        resumen = resumen_tfrecord(tfrec)
+        resumen_total.append(resumen)
+
+    # Guardar el archivo
+    with open(RESUMEN_PATH, "w", encoding="utf-8") as f:
+        f.write("\n".join(resumen_total))
+
+    print(f"Resúmenes guardados en '{RESUMEN_PATH}'.")
+
+if __name__ == "__main__":
+    main()

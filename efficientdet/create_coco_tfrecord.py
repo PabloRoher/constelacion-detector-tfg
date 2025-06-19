@@ -32,6 +32,7 @@ import multiprocessing
 import os
 import sys
 
+# Path al directorio con el repositorio oficial de efficientdet para que pueda importar los módulos necesarios
 sys.path.append(r'C:\Users\pablo\Desktop\TFG\Codigo\TFG1\efficientdet\automl\efficientdet')
 
 from absl import app
@@ -154,7 +155,7 @@ def create_tf_example(image,
       ymin.append(float(y) / image_height)
       ymax.append(float(y + height) / image_height)
       is_crowd.append(object_annotations['iscrowd'])
-      category_id = int(object_annotations['category_id']) - 1
+      category_id = int(object_annotations['category_id'])
       category_ids.append(category_id)
       category_names.append(category_index[object_annotations['category_id']]['name'].encode('utf8'))
       area.append(object_annotations['area'])

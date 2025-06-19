@@ -1,0 +1,241 @@
+### Resumen de: test-00000-of-00002.tfrecord ###
+Primer ejemplo:
+  filename: b'2022-05-22-00-00-00-n_png_jpg.rf.0b289015c48e87230308819215aea0e5.jpg'
+  labels: [16  9  6]
+  xmin: [0.0828125 0.6453125 0.6484375]
+  xmax: [0.2765625  0.75859374 0.8257812 ]
+  ymin: [0.5296875 0.8046875 0.471875 ]
+  ymax: [0.93046874 0.9296875  0.8414062 ]
+
+RESUMEN:
+Total imágenes analizadas: 20
+Total bounding boxes: 53
+Imágenes con cero boxes: 0
+Clases encontradas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16]
+xmin: min = 0.02656250074505806 max = 0.8453124761581421
+xmax: min = 0.06875000149011612 max = 0.8960937261581421
+ymin: min = 0.0 max = 0.934374988079071
+ymax: min = 0.0625 max = 1.0
+--------------------------------------------------
+
+### Resumen de: test-00001-of-00002.tfrecord ###
+Primer ejemplo:
+  filename: b'2022-07-07-00-00-00-n_png_jpg.rf.0b388ef247cc1260cfbaa49d0ab84a34.jpg'
+  labels: [16  6  5]
+  xmin: [0.      0.46875 0.5    ]
+  xmax: [0.1328125 0.671875  0.6234375]
+  ymin: [0.4015625 0.        0.5625   ]
+  ymax: [0.8578125  0.1703125  0.80859375]
+
+RESUMEN:
+Total imágenes analizadas: 20
+Total bounding boxes: 68
+Imágenes con cero boxes: 0
+Clases encontradas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+xmin: min = 0.0 max = 0.8765624761581421
+xmax: min = 0.05859375 max = 0.9296875
+ymin: min = 0.0 max = 0.90625
+ymax: min = 0.17031249403953552 max = 1.0
+--------------------------------------------------
+
+### Resumen de: train-00000-of-00008.tfrecord ###
+Primer ejemplo:
+  filename: b'cassiopeia_constellation_005_png_jpg.rf.960b07c7d03275984b4e1e2677f748d8.jpg'
+  labels: [5]
+  xmin: [0.1125]
+  xmax: [0.69453126]
+  ymin: [0.1046875]
+  ymax: [0.8]
+
+RESUMEN:
+Total imágenes analizadas: 20
+Total bounding boxes: 65
+Imágenes con cero boxes: 1
+Clases encontradas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+xmin: min = 0.0 max = 0.9203125238418579
+xmax: min = 0.06562499701976776 max = 0.9609375
+ymin: min = 0.0 max = 0.875
+ymax: min = 0.09140624850988388 max = 1.0
+--------------------------------------------------
+
+### Resumen de: train-00001-of-00008.tfrecord ###
+Primer ejemplo:
+  filename: b'2022-03-16-00-00-00-n_png_jpg.rf.96b380842cd9a8743b8d5affc1983089.jpg'
+  labels: [16]
+  xmin: [0.375]
+  xmax: [0.5875]
+  ymin: [0.5578125]
+  ymax: [0.77734375]
+
+RESUMEN:
+Total imágenes analizadas: 20
+Total bounding boxes: 64
+Imágenes con cero boxes: 0
+Clases encontradas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+xmin: min = 0.0 max = 0.8374999761581421
+xmax: min = 0.04843749850988388 max = 0.9007812738418579
+ymin: min = 0.0 max = 0.8218749761581421
+ymax: min = 0.02812499925494194 max = 0.999218761920929
+--------------------------------------------------
+
+### Resumen de: train-00002-of-00008.tfrecord ###
+Primer ejemplo:
+  filename: b'2022-10-15-00-00-00-s_png_jpg.rf.979874754fcde319b78d3fd51970ff75.jpg'
+  labels: [12 15 10  6]
+  xmin: [0.171875  0.0984375 0.0625    0.6765625]
+  xmax: [0.20234375 0.2078125  0.10546875 0.834375  ]
+  ymin: [0.2140625 0.196875  0.1125    0.0015625]
+  ymax: [0.2625     0.3578125  0.2        0.23515625]
+
+RESUMEN:
+Total imágenes analizadas: 20
+Total bounding boxes: 51
+Imágenes con cero boxes: 0
+Clases encontradas: [1, 2, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+xmin: min = 0.0 max = 0.8984375
+xmax: min = 0.06640625 max = 0.9351562261581421
+ymin: min = 0.0 max = 0.8031250238418579
+ymax: min = 0.09062500298023224 max = 1.0
+--------------------------------------------------
+
+### Resumen de: train-00003-of-00008.tfrecord ###
+Primer ejemplo:
+  filename: b'2022-09-02-00-00-00-s_png_jpg.rf.97145b984ba2ba15f7d3c6bbf3e692a8.jpg'
+  labels: [9 6 1]
+  xmin: [0.5921875 0.465625  0.49375  ]
+  xmax: [0.64375    0.5765625  0.62578124]
+  ymin: [0.6859375 0.6328125 0.296875 ]
+  ymax: [0.8023437  0.8515625  0.49140626]
+
+RESUMEN:
+Total imágenes analizadas: 20
+Total bounding boxes: 73
+Imágenes con cero boxes: 0
+Clases encontradas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+xmin: min = 0.015625 max = 0.964062511920929
+xmax: min = 0.09453125298023224 max = 0.9898437261581421
+ymin: min = 0.0 max = 0.8343750238418579
+ymax: min = 0.20156249403953552 max = 0.999218761920929
+--------------------------------------------------
+
+### Resumen de: train-00004-of-00008.tfrecord ###
+Primer ejemplo:
+  filename: b'moon_044_png_jpg.rf.970034a142a43eade16ae0e27989eac0.jpg'
+  labels: [10]
+  xmin: [0.5109375]
+  xmax: [0.57734376]
+  ymin: [0.61875]
+  ymax: [0.74375]
+
+RESUMEN:
+Total imágenes analizadas: 20
+Total bounding boxes: 65
+Imágenes con cero boxes: 0
+Clases encontradas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+xmin: min = 0.0 max = 0.854687511920929
+xmax: min = 0.09843750298023224 max = 0.965624988079071
+ymin: min = 0.0 max = 0.7796875238418579
+ymax: min = 0.12578125298023224 max = 0.999218761920929
+--------------------------------------------------
+
+### Resumen de: train-00005-of-00008.tfrecord ###
+Primer ejemplo:
+  filename: b'2022-10-07-00-00-00-s_png_jpg.rf.969f9d18945d2134148f1ca826f39878.jpg'
+  labels: [ 9  6 10 12 15]
+  xmin: [0.8       0.63125   0.465625  0.11875   0.0203125]
+  xmax: [0.8640625  0.796875   0.52734375 0.14921875 0.1546875 ]
+  ymin: [0.1609375 0.125     0.759375  0.2203125 0.18125  ]
+  ymax: [0.32421875 0.40859374 0.88671875 0.2828125  0.384375  ]
+
+RESUMEN:
+Total imágenes analizadas: 20
+Total bounding boxes: 63
+Imágenes con cero boxes: 0
+Clases encontradas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+xmin: min = 0.0 max = 0.9156249761581421
+xmax: min = 0.02500000037252903 max = 0.9453125
+ymin: min = 0.0 max = 0.871874988079071
+ymax: min = 0.14296874403953552 max = 0.9750000238418579
+--------------------------------------------------
+
+### Resumen de: train-00006-of-00008.tfrecord ###
+Primer ejemplo:
+  filename: b'2022-03-15-00-00-00-s_png_jpg.rf.97b9d63552f47558c613fd7497f6110d.jpg'
+  labels: [11  3  8  7  4 10  2]
+  xmin: [0.7734375 0.625     0.278125  0.5984375 0.6125    0.5046875 0.053125 ]
+  xmax: [0.8804687  0.7328125  0.47265625 0.75703126 0.6625     0.5515625
+ 0.1578125 ]
+  ymin: [0.20625   0.0703125 0.515625  0.54375   0.4171875 0.5875    0.6828125]
+  ymax: [0.46796876 0.21796875 0.7164062  0.7609375  0.48984376 0.6828125
+ 1.        ]
+
+RESUMEN:
+Total imágenes analizadas: 20
+Total bounding boxes: 75
+Imágenes con cero boxes: 0
+Clases encontradas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+xmin: min = 0.004687500186264515 max = 0.885937511920929
+xmax: min = 0.15312500298023224 max = 0.9554687738418579
+ymin: min = 0.0 max = 0.9546874761581421
+ymax: min = 0.12968750298023224 max = 1.0
+--------------------------------------------------
+
+### Resumen de: train-00007-of-00008.tfrecord ###
+Primer ejemplo:
+  filename: b'2022-01-12-00-00-00-n_png_jpg.rf.970da79e74521832f117c8fc0a153d80.jpg'
+  labels: [16  5]
+  xmin: [0.528125  0.0859375]
+  xmax: [0.66875   0.1921875]
+  ymin: [0.25   0.3125]
+  ymax: [0.6609375  0.53203124]
+
+RESUMEN:
+Total imágenes analizadas: 20
+Total bounding boxes: 62
+Imágenes con cero boxes: 0
+Clases encontradas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+xmin: min = 0.0 max = 0.8515625
+xmax: min = 0.09609375149011612 max = 0.948437511920929
+ymin: min = 0.0 max = 0.901562511920929
+ymax: min = 0.16875000298023224 max = 1.0
+--------------------------------------------------
+
+### Resumen de: valid-00000-of-00002.tfrecord ###
+Primer ejemplo:
+  filename: b'2022-03-22-00-00-00-s_png_jpg.rf.6060984f2a560081c6db0f17a26df064.jpg'
+  labels: [10  7  2  4  8]
+  xmin: [0.078125  0.6453125 0.103125  0.6578125 0.3390625]
+  xmax: [0.15859374 0.8171875  0.22421876 0.70234376 0.528125  ]
+  ymin: [0.596875  0.234375  0.        0.5015625 0.2765625]
+  ymax: [0.73359376 0.453125   0.35234374 0.5648438  0.48125   ]
+
+RESUMEN:
+Total imágenes analizadas: 20
+Total bounding boxes: 94
+Imágenes con cero boxes: 0
+Clases encontradas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+xmin: min = 0.0 max = 0.859375
+xmax: min = 0.00937500037252903 max = 0.9937499761581421
+ymin: min = 0.0 max = 0.846875011920929
+ymax: min = 0.16953125596046448 max = 1.0
+--------------------------------------------------
+
+### Resumen de: valid-00001-of-00002.tfrecord ###
+Primer ejemplo:
+  filename: b'moon_022_png_jpg.rf.607a6e3a00d81ae6275942037f4584bc.jpg'
+  labels: [10]
+  xmin: [0.428125]
+  xmax: [0.4796875]
+  ymin: [0.0171875]
+  ymax: [0.096875]
+
+RESUMEN:
+Total imágenes analizadas: 20
+Total bounding boxes: 68
+Imágenes con cero boxes: 0
+Clases encontradas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+xmin: min = 0.0 max = 0.8999999761581421
+xmax: min = 0.05781250074505806 max = 0.99609375
+ymin: min = 0.0 max = 0.839062511920929
+ymax: min = 0.09687499701976776 max = 0.9710937738418579
+--------------------------------------------------
