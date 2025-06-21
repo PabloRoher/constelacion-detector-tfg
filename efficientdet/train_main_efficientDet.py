@@ -4,6 +4,7 @@
 #   - Número de clases fijado a 16
 #   - Epochs, batch size y modelo predefinidos
 #   - Simplificado para entrenamiento local
+#   - Añadido el fine-tuning desde un checkpoint pre-entrenado
 # Copyright 2020 Google Research. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -79,13 +80,31 @@ flags.DEFINE_integer('eval_batch_size', 1, 'Batch size for eval')
 flags.DEFINE_integer('num_examples_per_epoch', 1641, 'Num examples per epoch')
 flags.DEFINE_integer('iterations_per_loop', 1000, '')
 flags.DEFINE_integer('save_checkpoints_steps', 1000, '')
-flags.DEFINE_string('mode', 'train', 'Mode: train, eval o train_and_eval')
+flags.DEFINE_string('mode', 'eval', 'Mode: train, eval o train_and_eval')
+
+PRETRAINED_CKPT_PATH = "/home/pablo/constelacion-detector-tfg/efficientdet/efficientdet-d0"
+
+def get_estimator(global_batch_size, config, run_config, strategy, json_file_path=None):
+    n_shards = getattr(strategy, 'num_replicas_in_sync', 1) if strategy else 1
+    params = dict(config.as_dict())
+    params['num_shards'] = n_shards
+    params['batch_size'] = global_batch_size // n_shards
+    params['model_name'] = FLAGS.model_name
+    params['num_examples_per_epoch'] = FLAGS.num_examples_per_epoch
+    params['val_json_file'] = json_file_path
+    params['ckpt'] = PRETRAINED_CKPT_PATH
+
+    model_fn_instance = det_model_fn.get_model_fn(FLAGS.model_name)
+    return tf.estimator.Estimator(
+        model_fn=model_fn_instance, config=run_config, params=params)
 
 def main(_):
     # rutas y parámetros
-    TRAIN_RECORD = "/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/tfrecords/train-*-of-*.tfrecord"
-    VAL_RECORD   = "/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/tfrecords/valid-*-of-*.tfrecord"
-    TEST_RECORD  = "/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/tfrecords/test-*-of-*.tfrecord"
+    VALID_JSON_FILE = '/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/valid/_annotations.coco.json'
+    TEST_JSON_FILE  = '/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/test/_annotations.coco.json'
+    TRAIN_RECORD = "/home/pablo/datasets/constellation_tfrecords/train-*-of-*.tfrecord"
+    VAL_RECORD   = "/home/pablo/datasets/constellation_tfrecords/valid-*-of-*.tfrecord"
+    TEST_RECORD  = "/home/pablo/datasets/constellation_tfrecords/test-*-of-*.tfrecord"
     MODEL_DIR    = "/home/pablo/constelacion-detector-tfg/efficientdet/automl/model_dir"
     MODEL_NAME   = "efficientdet-d0"
     NUM_CLASSES  = 16
@@ -96,7 +115,7 @@ def main(_):
     flags.FLAGS.val_file_pattern   = VAL_RECORD
     flags.FLAGS.model_dir          = MODEL_DIR
     flags.FLAGS.model_name         = MODEL_NAME
-    flags.FLAGS.hparams            = f"num_classes={NUM_CLASSES}"
+    flags.FLAGS.hparams            = f"num_classes={NUM_CLASSES},learning_rate=0.01,lr_warmup_init=0.0001,lr_decay_method='cosine',moving_average_decay=0"
     flags.FLAGS.num_epochs         = EPOCHS
     flags.FLAGS.train_batch_size   = BATCH_SIZE
 
@@ -147,19 +166,9 @@ def main(_):
         save_checkpoints_steps=FLAGS.save_checkpoints_steps if hasattr(FLAGS, "save_checkpoints_steps") else 1000,
     )
 
-    def get_estimator(global_batch_size):
-        n_shards = getattr(strategy, 'num_replicas_in_sync', 1) if strategy else 1
-        params = dict(config.as_dict())
-        params['num_shards'] = n_shards
-        params['batch_size'] = global_batch_size // n_shards
-        params['model_name'] = FLAGS.model_name
-        params['num_examples_per_epoch'] = FLAGS.num_examples_per_epoch
-        params['val_json_file'] = '/mnt/c/Users/pablo/Desktop/TFG/Datasets/Constellation.v1i.coco/valid/_annotations.coco.json'
-        return tf.estimator.Estimator(
-            model_fn=model_fn_instance, config=run_config, params=params)
-
-    train_est = get_estimator(FLAGS.train_batch_size)
-    eval_est  = get_estimator(FLAGS.eval_batch_size if hasattr(FLAGS, "eval_batch_size") else 1)
+    train_est = get_estimator(FLAGS.train_batch_size, config, run_config, strategy)
+    valid_est = get_estimator(FLAGS.eval_batch_size, config, run_config, strategy, json_file_path=VALID_JSON_FILE)
+    test_est  = get_estimator(FLAGS.eval_batch_size, config, run_config, strategy, json_file_path=TEST_JSON_FILE)
 
      # Entrenamiento completo + evaluación final en valid y test
     if FLAGS.mode == 'train':
@@ -176,9 +185,9 @@ def main(_):
 
     # Solo evaluación (sin entrenamiento)
     elif FLAGS.mode == 'eval':
-        eval_results = eval_est.evaluate(input_fn=eval_input_fn, steps=eval_steps)
+        eval_results = valid_est.evaluate(input_fn=eval_input_fn, steps=eval_steps)
         save_coco_metrics_to_csv(COCO_CSV_PATH, MODEL_NAME + "_valid", eval_results)
-        test_results = eval_est.evaluate(input_fn=test_input_fn)
+        test_results = valid_est.evaluate(input_fn=test_input_fn)
         save_coco_metrics_to_csv(COCO_CSV_PATH, MODEL_NAME + "_test", test_results)
 
     else:

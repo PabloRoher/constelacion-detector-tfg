@@ -33,3 +33,7 @@ Prueba.py
 
 # Ignora el repositorio oficial clonado
 efficientdet/automl/
+
+# Ignorar el checkpoint pre-entrenado de COCO descargado
+efficientdet-d0.tar.gz
+efficientdet-d0/

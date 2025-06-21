@@ -1,0 +1,13 @@
+Modelo,mAP@[.5:.95],mAP@0.5,mAP@0.75,Tiempo Entrenamiento (s)
+efficientdet-d0_valid,0.375453,0.815977,0.284698,2047.69
+efficientdet-d0_test,0.000479,0.001114,0.000246,2047.69
+efficientdet-d0_valid,0.554773,0.93546,0.617966,1846.51
+efficientdet-d0_test,0.001065,0.002353,0.000941,1846.51
+efficientdet-d0_valid,0.072005,0.174781,0.04469,1691.41
+efficientdet-d0_test,0.001069,0.001955,0.001524,1691.41
+efficientdet-d0_valid,0.486901,0.893032,0.495469,1679.41
+efficientdet-d0_test,0.000727,0.001501,0.00072,1679.41
+efficientdet-d0_valid,0.486901,0.893032,0.495469,0
+efficientdet-d0_test,0.000727,0.001501,0.00072,0
+efficientdet-d0_valid,0.486901,0.893032,0.495469,0
+efficientdet-d0_test,0.000727,0.001501,0.00072,0
