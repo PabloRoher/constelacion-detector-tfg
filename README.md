@@ -1,10 +1,10 @@
 # TFG - Detección de Constelaciones usando YOLOv11, YOLO-NAS y Modelo Propio
 
-Este proyecto tiene como objetivo detectar constelaciones en imágenes del cielo utilizando redes de detección de objetos de última generación basadas en **YOLOv11**, **YOLO-NAS** y un **modelo propio personalizado**.
+Este proyecto tiene como objetivo entrenar, evaluar y comparar diferentes arquitecturas de detección de objetos para la tarea específica de identificar constelaciones en imágenes del cielo. Los modelos principales implementados son **YOLOv11**, **YOLO-NAS**, **EfficientDet** y **RT-DETR**.
 
 > Nota: En este repositorio se incluye una carpeta `/runs/detect/` que contiene únicamente resultados de entrenamientos de prueba iniciales, como ejemplos de ejecución (principalmente con el modelo YOLOv11n). Los mejores resultados de cada entrenamiento se encuentran organizados en el archivo llamado `resultados_entrenamiento`.
 
-Este proyecto utiliza **tres entornos de trabajo**:
+Este proyecto utiliza **cuatro entornos de trabajo aislados** mediante entornos virtuales de Python para evitar conflictos de dependencias entre los diferentes frameworks.
 
 - **YOLOv11 / Ultralytics:** Entorno virtual `venv`
 - **YOLO-NAS / Super-Gradients:** Entorno virtual `venv_nas`
@@ -24,11 +24,11 @@ python yolo_nas/train_yolo_nas.py
 
 ### Activar el entorno YOLO-NAS (`venv_efficientDet`)
 
-cd ruta/del/proyecto
-.\venv_efficientDet\Scripts\activate
-python efficientdet\train_main_efficientDet.py
+Este entorno está configurado en WSL2 (Windows Subsystem for Linux) para aprovechar la aceleración por GPU y la compatibilidad del ecosistema Linux.
 
-> Nota: El script train_main_efficientDet.py es una adaptación personalizada del script oficial de Google Research. Incluye los parámetros y rutas adaptados al dataset de constelaciones utilizado en este TFG.
+cd ruta/del/proyecto
+source venv_efficientdet/bin/activate
+python efficientdet\train_main_efficientDet.py
 
 ## Requisitos
 
@@ -52,7 +52,9 @@ pip install -r requirementsYOLO_NAS.txt
 
 ### Para Efficient_Det:
 
+# Desde la terminal de WSL2 con el entorno 'venv_efficientdet' activado
 
+pip install -r requirementsEfficientdet.txt
 
 ## Resultados y Métricas
 
@@ -68,7 +70,7 @@ El archivo contiene 4 campos: mAP50,mAP75,mAP50-95 y Tiempo de Entrenamiento (s)
   
 - Para YOLOV11 se hace uso de [Ultralytics YOLO11](https://github.com/ultralytics/ultralytics), desarrollado por Glenn Jocher y Jing Qiu, bajo licencia AGPL-3.0.
 
-- Para EfficientDet se utiliza la implementación oficial de Google Research / AutoML bajo licencia Apache 2.0.
+- Para EfficientDet se utiliza la implementación oficial de Google Research (https://github.com/google/automl/tree/master/efficientdet) / AutoML bajo licencia Apache 2.0.
   
 - El dataset base utilizado es el conjunto [Constellation Dataset](https://universe.roboflow.com/ws-qwbuh/constellation-dsphi) disponible en Roboflow Universe, creado por WS (2023).
 
