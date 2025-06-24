@@ -1,0 +1,6 @@
+# Rastrea archivos de modelos de PyTorch solo dentro de la carpeta models/
+models/*.pt filter=lfs diff=lfs merge=lfs -text
+models/*.pth filter=lfs diff=lfs merge=lfs -text
+
+# Rastrea cualquier archivo .zip dentro de la carpeta models/ (para EfficientDet)
+models/*.zip filter=lfs diff=lfs merge=lfs -text
