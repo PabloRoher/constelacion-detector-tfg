@@ -11,6 +11,9 @@ runs/
 checkpoints/
 */runs/
 */checkpoints/
+rtdetr/RTDETR_Constellations/
+*.log
+*.tfevents.*
 
 # Ignorar archivos de pesos grandes
 *.pt
@@ -22,6 +25,8 @@ checkpoints/
 .idea/
 .vscode/
 *.iml
+__pycache__/
+*/__pycache__/
 
 # Ignorar archivos de logs y auxiliares
 *.log
@@ -33,6 +38,7 @@ Prueba.py
 
 # Ignora el repositorio oficial clonado
 efficientdet/automl/
+rtdetr/source/
 
 # Ignorar el checkpoint pre-entrenado de COCO descargado
 efficientdet-d0.tar.gz

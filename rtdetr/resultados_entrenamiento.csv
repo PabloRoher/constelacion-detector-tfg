@@ -1,0 +1,2 @@
+Modelo,mAP50-95,mAP50,mAP75,Tiempo Entrenamiento (s)
+rtdetr-l.pt,0.594195,0.958913,0.666899,5958.3
