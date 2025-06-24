@@ -1,6 +1,8 @@
+Github: https://github.com/PabloRoher/constelacion-detector-tfg.git
+
 # TFG - Detección de Constelaciones usando YOLOv11, YOLO-NAS, RT-DETR y EfficientDet
 
-Titulo:
+# Titulo:
 
 ## De Mitos a Modelos: Implementación de Técnicas de Inteligencia Artificial para la Detección y Análisis Automático de Constelaciones
 
